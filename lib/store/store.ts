@@ -1,11 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import studentReducer from "../features/Student/StudentSlice"
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
+const persistConfig={
+  key:"student",
+  storage
+}
+const rootReducer=combineReducers({
+  "student":studentReducer
+  
+})
+
+const persistedReducer=persistReducer(persistConfig,rootReducer)
 export const makeStore = () => {
   return configureStore({
-    reducer: {
-      "student":studentReducer
-    },
+    reducer: persistedReducer
   })
 }
 

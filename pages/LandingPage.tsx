@@ -2,23 +2,33 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addStudent } from "@/lib/features/Student/StudentSlice";
+import StudentField from "@/components/StudentField";
 
 export default function LandingPage() {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState<string | any>({});
+  const [isDuplicate, setIsDuplicate] = useState<boolean>();
   let id: any = 0;
   const studentsData = useSelector((state: any) => state.student.studentData);
 
   const addRecord = (e: any) => {
     e.preventDefault();
+    if (
+      studentsData.some(
+        (student: any) => student.rollnumber === formData.rollnumber
+      )
+    ) {
+      setIsDuplicate(true);
+      return;
+    }
     dispatch(addStudent(formData));
     setFormData({});
   };
   useEffect(() => {
-    console.log(studentsData, "from use Effect");
+    // console.log(studentsData, "from use Effect");
   }, [studentsData]);
   return (
-    <div className=" mx-auto mt-4">
+    <div className=" mx-auto mt-4 ">
       <div className="bg-gray-50 p-3">
         <h1 className="text-center text-3xl my-3">Welcome to Crud App</h1>
         <p className="text-lg text-gray-400 pl-3 text-center">
@@ -26,10 +36,10 @@ export default function LandingPage() {
           the app
         </p>
       </div>
-      <div className="flex justify-around">
+      <div className="xl:flex  justify-around">
         <form
           onSubmit={addRecord}
-          className="mt-12 flex-1  max-w-3xl ml-20 bg-blue-50 p-5 rounded-xl"
+          className="mt-8 flex-1  max-w-3xl ml-12 bg-blue-50 p-5 rounded-xl"
         >
           {InputFields.map((student) => (
             <div key={student.id} className="flex flex-col gap-2 space-y-4">
@@ -48,6 +58,11 @@ export default function LandingPage() {
               />
             </div>
           ))}
+          {isDuplicate && (
+            <p className="text-red-600 pl-12 pt-4 font-semibold">
+              Student duplication error (roll number can't be duplicate)
+            </p>
+          )}
           <button
             type="submit"
             className="m-5 bg-blue-500 text-white px-5 py-2 rounded-full"
@@ -55,17 +70,26 @@ export default function LandingPage() {
             Add Record
           </button>
         </form>
-        <div className="border">
+        <div className="border mx-8 mt-8 max-w-3xl bg-gray-400 ">
+          <ul className=" flex gap-12  p-4   text-white justify-between border">
+            <li>Name</li>
+            <li>Roll Number</li>
+            <li>Semester</li>
+            <li>Degree</li>
+            <li>Operations</li>
+          </ul>
+
           {studentsData &&
             studentsData.map((student: string | any) => (
-              <ul
-                key={++id}
-                className="flex gap-20 p-4 bg-gray-50 justify-between border "
-              >
-                <li className="cursor-pointer">{student.name}</li>
-                <li className="cursor-pointer">{student.rollnumber}</li>
-                <li className="cursor-pointer">{student.semester}</li>
-                <li className="cursor-pointer">{student.degree}</li>
+              <ul key={++id}>
+                <StudentField
+                  // name={student.name}
+                  // rollnumber={student.rollnumber}
+                  // semester={student.degree}
+                  // degree={student.semester}
+                  data={studentsData}
+                  student={student}
+                />
               </ul>
             ))}
         </div>

@@ -16,11 +16,20 @@ export const StudentSlice = createSlice({
    addStudent:(state,action)=>{
     state.studentData.push(action.payload)
     
+   },
+   updateStudent:(state,action)=>{
+    console.log("hello");
+    
+    // state.studentData=[]
+    state.studentData=action.payload;
+    // console.log(state.studentData);
+    
    }
+
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { addStudent } = StudentSlice.actions
+export const { addStudent,updateStudent } = StudentSlice.actions
 
 export default StudentSlice.reducer
